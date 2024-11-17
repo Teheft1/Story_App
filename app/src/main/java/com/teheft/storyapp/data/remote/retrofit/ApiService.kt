@@ -2,6 +2,7 @@ package com.teheft.storyapp.data.remote.retrofit
 
 import com.teheft.storyapp.data.remote.response.DetailResponse
 import com.teheft.storyapp.data.remote.response.ListStoriesResponse
+import com.teheft.storyapp.data.remote.response.ListStoryItem
 import com.teheft.storyapp.data.remote.response.LoginResponse
 import com.teheft.storyapp.data.remote.response.RegisterResponse
 import okhttp3.MultipartBody
@@ -15,6 +16,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -41,7 +43,10 @@ interface ApiService {
     ): Response<RegisterResponse>
 
     @GET("stories")
-    suspend fun getStories(): Response<ListStoriesResponse>
+    suspend fun getStories(
+        @Query("page") page: Int,
+        @Query("size") size : Int
+    ): ListStoriesResponse
 
     @GET("stories/{id}")
     suspend fun getDetailStories(

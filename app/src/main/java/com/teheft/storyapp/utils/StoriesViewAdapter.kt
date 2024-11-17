@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +19,7 @@ import com.teheft.storyapp.utils.StoriesViewAdapter.MyViewHolder
 
 class StoriesViewAdapter(
     private val context: Context
-): ListAdapter<ListStoryItem, MyViewHolder>(DIFF_CALLBACK) {
+): PagingDataAdapter<ListStoryItem, MyViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -27,11 +28,14 @@ class StoriesViewAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val stories = getItem(position)
-        holder.bind(context, stories)
+        if (stories != null) {
+            holder.bind(context, stories)
+        }
     }
 
     class MyViewHolder(val binding: ItemListBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(context: Context, stories: ListStoryItem){
+            Log.d("adapter", "$stories")
             Log.d("photo", "${stories.photoUrl}")
             Glide.with(itemView.context).load(stories.photoUrl).into(binding.imgItem)
             binding.tvTitle.text = stories.name

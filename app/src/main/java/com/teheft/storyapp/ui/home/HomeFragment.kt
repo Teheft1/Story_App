@@ -43,46 +43,60 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        binding.rvActive.layoutManager = LinearLayoutManager(requireContext())
+
+        getData()
+
+    }
+
+    private fun getData() {
         val storiesViewAdapter = StoriesViewAdapter(requireContext())
 
-//        lifecycleScope.launch {
-//            binding.progressBar.visibility = View.VISIBLE
-        homeViewModel.getStories()
-        homeViewModel.result.observe(viewLifecycleOwner){result ->
-                if(result != null){
-                    when(result){
-                        is Result.Error -> {
-                            Log.d("home", result.error.toString())
-                            binding.progressBar.visibility = View.GONE
-                            AlertDialog.Builder(requireActivity())
-                                .setTitle("Error")
-                                .setMessage(result.error)
-                                .setPositiveButton("Coba Lagi"){dialog,_ ->
-                                    homeViewModel.getStories()
-                                    dialog.dismiss()
-                                }
-                                .setNegativeButton("Tutup"){dialog,_ ->
-                                    dialog.dismiss()
-                                }
-                                .show()
-                        }
-                        is Result.Loading -> {
-                            binding.progressBar.visibility = View.VISIBLE
-                        }
-                        is Result.Success -> {
-                            binding.progressBar.visibility = View.GONE
-                            val stories = result.data
-                            storiesViewAdapter.submitList(stories)
-                        }
-                    }
-                }
-//            }
+        homeViewModel.result.observe(viewLifecycleOwner){data ->
+            Log.d("homefragment", "$data")
+            storiesViewAdapter.submitData(lifecycle, data)
         }
-        binding.rvActive.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = storiesViewAdapter
-        }
+
+        binding.rvActive.adapter = storiesViewAdapter
     }
+
+
+//
+//    homeViewModel.getStories()
+//    homeViewModel.result.observe(viewLifecycleOwner){result ->
+//        if(result != null){
+//            when(result){
+//                is Result.Error -> {
+//                    Log.d("home", result.error.toString())
+//                    binding.progressBar.visibility = View.GONE
+//                    AlertDialog.Builder(requireActivity())
+//                        .setTitle("Error")
+//                        .setMessage(result.error)
+//                        .setPositiveButton("Coba Lagi"){dialog,_ ->
+//                            homeViewModel.getStories()
+//                            dialog.dismiss()
+//                        }
+//                        .setNegativeButton("Tutup"){dialog,_ ->
+//                            dialog.dismiss()
+//                        }
+//                        .show()
+//                }
+//                is Result.Loading -> {
+//                    binding.progressBar.visibility = View.VISIBLE
+//                }
+//                is Result.Success -> {
+//                    binding.progressBar.visibility = View.GONE
+//                    val stories = result.data
+//                    storiesViewAdapter.submitList(stories)
+//                }
+//            }
+//        }
+//    }
+//    binding.rvActive.apply {
+//        layoutManager = LinearLayoutManager(requireContext())
+//        adapter = storiesViewAdapter
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

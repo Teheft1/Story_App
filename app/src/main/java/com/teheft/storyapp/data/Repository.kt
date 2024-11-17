@@ -1,10 +1,15 @@
 package com.teheft.storyapp.data
 
+import android.graphics.pdf.PdfDocument.Page
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.google.gson.Gson
 import com.teheft.storyapp.data.pref.UserModel
 import com.teheft.storyapp.data.pref.UserPreference
@@ -31,11 +36,7 @@ class Repository private constructor(
     private val userPreference: UserPreference,
     private val apiService: ApiService
 ){
-    private val result = MediatorLiveData<Result<UserModel>>()
-    private val resultMessage = MutableLiveData<Result<String>>()
-    private val listStory  = MutableLiveData<Result<List<ListStoryItem>>>()
-    private val detailStory = MutableLiveData<Result<Story>>()
-
+    private val result = MediatorLiveData<Result<PagingData<ListStoryItem>>>()
     fun signUp(name: String, email: String, password: String)= liveData(Dispatchers.IO){
         emit(Result.Loading)
         try{
@@ -113,40 +114,48 @@ class Repository private constructor(
          }
     }
 
-    fun getStories() = liveData<Result<List<ListStoryItem>>>(Dispatchers.IO){
-        Log.d("repos","Story loading")
-            emit(Result.Loading)
-            try{
-                val stories = apiService.getStories()
-                if(stories.isSuccessful){
-                    Log.d("repos","Story Success")
-
-                    val reponses = stories.body()?.listStory
-                    val list = ArrayList<ListStoryItem>()
-
-                    reponses?.forEach{
-                        if (it != null) {
-                            list.add(it)
-                        }
-                    }
-
-                    emit(Result.Success(list))
-                }else{
-                    val errorBody = stories.errorBody()?.string()
-                    val error = Gson().fromJson(errorBody, RegisterResponse::class.java)
-                    emit(Result.Error(error.message.toString()))
-                }
-            }catch (e: UnknownHostException){
-                Log.d("repos","Story Error")
-                emit(Result.Error(e.message.toString()))
-            }catch (e: IOException){
-                Log.d("repos","Story Error")
-                emit(Result.Error(e.message.toString()))
-            }catch (e: HttpException){
-                Log.d("repos","Story Error")
-                emit(Result.Error(e.message.toString()))
+    fun getStories(): LiveData<PagingData<ListStoryItem>> {
+         return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            pagingSourceFactory = {
+                StoryPagingSource(apiService)
             }
+        ).liveData
     }
+//    Log.d("repos","Story loading")
+//    emit(Result.Loading)
+//    try{
+//        val stories = apiService.getStories()
+//        if(stories.isSuccessful){
+//            Log.d("repos","Story Success")
+//
+//            val reponses = stories.body()?.listStory
+//            val list = ArrayList<ListStoryItem>()
+//
+//            reponses?.forEach{
+//                if (it != null) {
+//                    list.add(it)
+//                }
+//            }
+//
+//            emit(Result.Success(list))
+//        }else{
+//            val errorBody = stories.errorBody()?.string()
+//            val error = Gson().fromJson(errorBody, RegisterResponse::class.java)
+//            emit(Result.Error(error.message.toString()))
+//        }
+//    }catch (e: UnknownHostException){
+//        Log.d("repos","Story Error")
+//        emit(Result.Error(e.message.toString()))
+//    }catch (e: IOException){
+//        Log.d("repos","Story Error")
+//        emit(Result.Error(e.message.toString()))
+//    }catch (e: HttpException){
+//        Log.d("repos","Story Error")
+//        emit(Result.Error(e.message.toString()))
+//    }
 
     fun getDetailStories(id: String) = liveData(Dispatchers.IO){
             emit(Result.Loading)
@@ -192,84 +201,3 @@ class Repository private constructor(
             }.also { instance = it }
     }
 }
-
-//                uploadStory.enqueue(object : Callback<RegisterResponse>{
-//                    override fun onResponse(
-//                        call: Call<RegisterResponse>,
-//                        response: Response<RegisterResponse>
-//                    ) {
-//
-//                    }
-//
-//                    override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-//                        resultMessage.postValue(Result.Error(t.message.toString()))
-//                    }
-//                })
-
-//
-//uploadStory.enqueue(object : Callback<RegisterResponse>{
-//    override fun onResponse(
-//        call: Call<RegisterResponse>,
-//        response: Response<RegisterResponse>
-//    ) {
-//        if(response.isSuccessful){
-//            val responses = response.body()?.message
-//            resultMessage.postValue(Result.Success(responses.toString()))
-//            Log.d("repoResult", "$uploadStory")
-//        }else{
-//            val body = response.errorBody()?.string()
-//            val error = Gson().fromJson(body,RegisterResponse::class.java)
-//            resultMessage.postValue(Result.Error("Login Failed: ${error.message}"))
-//        }
-//    }
-//
-//    override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-//        resultMessage.postValue(Result.Error(t.message.toString()))
-//    }
-//})
-
-//        Log.d("signup","sign up is starting....")
-//        val signUp = apiService.register(name, email, password)
-//        Log.d("signup", "sign up is done")
-//
-//        signUp.enqueue(object: Callback<RegisterResponse> {
-//            override fun onResponse(
-//                call: Call<RegisterResponse>,
-//                response: Response<RegisterResponse>
-//            ) {
-//                if (response.isSuccessful){
-//                    val responses = response.body()?.message
-//                    resultMessage.postValue(Result.Success(responses!!))
-//                    Log.d("repo Success", "sign up successfull")
-//                }else{
-//                    val errorResponses = response.errorBody()?.string()
-//                    resultMessage.postValue(Result.Error(errorResponses))
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-//                resultMessage.postValue(Result.Error(t.message.toString()))
-//                Log.e("error sign up", "sign up error ${t.message}")
-//            }
-//        })
-//        Log.d("result message", "$resultMessage")
-
-//        stories.enqueue(object : Callback<ListStoriesResponse>{
-//            override fun onFailure(call: Call<ListStoriesResponse>, t: Throwable) {
-//                listStory.postValue(Result.Error(t.message.toString()))
-//            }
-//
-//            override fun onResponse(
-//                call: Call<ListStoriesResponse>,
-//                response: Response<ListStoriesResponse>
-//            ) {
-//                val result = response.body()?.listStory
-//                val list = ArrayList<ListStoryItem>()
-//
-//                result?.forEach{
-//                    list.add(it!!)
-//                }
-//
-//                listStory.postValue(Result.Success(list))
-//            }
-//        })
