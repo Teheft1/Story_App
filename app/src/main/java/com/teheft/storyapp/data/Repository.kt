@@ -90,10 +90,10 @@ class Repository private constructor(
 
     }
 
-     fun uploadStories(description: RequestBody, file: MultipartBody.Part) = liveData(Dispatchers.IO){
+     fun uploadStories(description: RequestBody, file: MultipartBody.Part, lat: RequestBody?, lon: RequestBody?) = liveData(Dispatchers.IO){
          emit(Result.Loading)
          try{
-             val uploadStory = apiService.uploadStories(description, file)
+             val uploadStory = apiService.uploadStories(description, file, lat, lon)
              if(uploadStory.isSuccessful){
                  val responses = uploadStory.body()?.message
                  emit(Result.Success(responses.toString()))

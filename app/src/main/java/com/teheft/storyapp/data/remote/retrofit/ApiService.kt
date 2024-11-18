@@ -39,7 +39,9 @@ interface ApiService {
     @POST("stories")
     suspend fun uploadStories(
         @Part ("description") description: RequestBody,
-        @Part file: MultipartBody.Part
+        @Part file: MultipartBody.Part,
+        @Part ("lat") lat: RequestBody?,
+        @Part ("lon") lon: RequestBody?
     ): Response<RegisterResponse>
 
     @GET("stories")

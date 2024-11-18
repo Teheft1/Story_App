@@ -69,6 +69,7 @@ dependencies {
     //Maps
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.play.services.maps)
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 
     //Unit Testing
     androidTestImplementation(libs.androidx.core.testing) //InstantTaskExecutorRule

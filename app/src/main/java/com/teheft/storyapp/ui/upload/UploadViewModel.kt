@@ -10,7 +10,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 class UploadViewModel(private val repository: Repository): ViewModel() {
-    fun uploadStory(description: RequestBody, file: MultipartBody.Part): LiveData<Result<String>> {
-        return repository.uploadStories(description, file)
+    fun uploadStory(description: RequestBody, file: MultipartBody.Part, lat: RequestBody?, lon: RequestBody?): LiveData<Result<String>> {
+        return repository.uploadStories(description, file, lat, lon)
     }
 }
