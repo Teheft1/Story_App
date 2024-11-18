@@ -15,7 +15,4 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: Repository) : ViewModel() {
     val result : LiveData<PagingData<ListStoryItem>> = repository.getStories().cachedIn(viewModelScope)
-//    private val _text = MutableLiveData<Result<String>>()
-//    val text: LiveData<Result<String>> = _text
-
 }

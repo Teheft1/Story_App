@@ -55,17 +55,29 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
 
+    //Api Network call
     implementation(libs.retrofit)
     implementation(libs.retrofit2.converter.gson)
     implementation(libs.logging.interceptor)
     implementation(libs.glide)
 
+    //Datastore and Camera
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.lifecycle)
 
+    //Maps
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.play.services.maps)
+
+    //Unit Testing
+    androidTestImplementation(libs.androidx.core.testing) //InstantTaskExecutorRule
+    androidTestImplementation(libs.kotlinx.coroutines.test) //TestDispatcher
+
+    testImplementation(libs.androidx.core.testing) // InstantTaskExecutorRule
+    testImplementation(libs.kotlinx.coroutines.test) //TestDispatcher
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
