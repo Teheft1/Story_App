@@ -11,6 +11,7 @@ import com.teheft.storyapp.ui.MainViewModel
 import com.teheft.storyapp.ui.detail.DetailViewModel
 import com.teheft.storyapp.ui.home.HomeViewModel
 import com.teheft.storyapp.ui.login.LoginViewModel
+import com.teheft.storyapp.ui.map.MapsViewModel
 import com.teheft.storyapp.ui.upload.UploadViewModel
 
 class ViewModelFactory(private val repository: Repository): ViewModelProvider.NewInstanceFactory(){
@@ -25,6 +26,8 @@ class ViewModelFactory(private val repository: Repository): ViewModelProvider.Ne
             return UploadViewModel(repository) as T
         }else if(modelClass.isAssignableFrom(DetailViewModel::class.java)){
             return DetailViewModel(repository) as T
+        }else if(modelClass.isAssignableFrom(MapsViewModel::class.java)){
+            return MapsViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown View Model Class ${modelClass.name}")
     }

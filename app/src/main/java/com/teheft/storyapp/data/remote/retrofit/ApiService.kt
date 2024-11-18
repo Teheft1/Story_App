@@ -48,6 +48,11 @@ interface ApiService {
         @Query("size") size : Int
     ): ListStoriesResponse
 
+    @GET("stories")
+    suspend fun getStoriesWithLocation(
+        @Query("location") location : Int = 1,
+    ): Response<ListStoriesResponse>
+
     @GET("stories/{id}")
     suspend fun getDetailStories(
         @Path ("id") id: String

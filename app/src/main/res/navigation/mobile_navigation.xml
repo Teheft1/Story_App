@@ -10,5 +10,10 @@
         android:name="com.teheft.storyapp.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.teheft.storyapp.ui.map.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" />
 
 </navigation>

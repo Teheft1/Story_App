@@ -117,12 +117,42 @@ class Repository private constructor(
     fun getStories(): LiveData<PagingData<ListStoryItem>> {
          return Pager(
             config = PagingConfig(
-                pageSize = 5
+                pageSize = 5,
+                initialLoadSize = 5,
+                prefetchDistance = 1
             ),
             pagingSourceFactory = {
                 StoryPagingSource(apiService)
             }
         ).liveData
+    }
+
+    fun getStoriesWithLocation() = liveData(Dispatchers.IO) {
+        emit(Result.Loading)
+
+        try {
+            val data = apiService.getStoriesWithLocation()
+
+            if (data.isSuccessful){
+                val responses = data.body()?.listStory
+                val list = ArrayList<ListStoryItem>()
+
+                responses?.forEach{
+                    if(it != null){
+                        list.add(it)
+                    }
+                }
+
+                emit(Result.Success(responses))
+            }else{
+                val errorBody = data.errorBody()?.string()
+                val error = Gson().fromJson(errorBody, RegisterResponse::class.java)
+                emit(Result.Error(error.message.toString()))
+            }
+        }catch (e: Exception){
+            Log.d("repo", "$e")
+            emit(Result.Error(e.message.toString()))
+        }
     }
 //    Log.d("repos","Story loading")
 //    emit(Result.Loading)
