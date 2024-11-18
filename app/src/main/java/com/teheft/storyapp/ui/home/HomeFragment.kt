@@ -12,12 +12,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.teheft.storyapp.data.Result
 import com.teheft.storyapp.data.pref.dataStore
 import com.teheft.storyapp.databinding.FragmentHomeBinding
+import com.teheft.storyapp.utils.LoadingStateAdapter
 import com.teheft.storyapp.utils.StoriesViewAdapter
 import com.teheft.storyapp.utils.ViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -28,6 +31,7 @@ class HomeFragment : Fragment() {
     }
 
     private val binding get() = _binding!!
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,13 +56,25 @@ class HomeFragment : Fragment() {
 
     private fun getData() {
         val storiesViewAdapter = StoriesViewAdapter(requireContext())
+        val Header = LoadingStateAdapter { storiesViewAdapter.retry() }
+        val footer = LoadingStateAdapter{
+            storiesViewAdapter.retry()
+        }
 
         homeViewModel.result.observe(viewLifecycleOwner){data ->
             Log.d("homefragment", "$data")
             storiesViewAdapter.submitData(lifecycle, data)
         }
 
-        binding.rvActive.adapter = storiesViewAdapter
+        storiesViewAdapter.addLoadStateListener {
+            Header.loadState = it.source.refresh
+            footer.loadState = it.source.append
+
+        }
+
+        val concatAdapter = ConcatAdapter(Header, storiesViewAdapter, footer)
+
+        binding.rvActive.adapter = concatAdapter
     }
 
 

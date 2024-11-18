@@ -3,6 +3,7 @@ import com.android.build.api.variant.BuildConfigField
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 android {
@@ -64,6 +65,7 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
 
     implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.play.services.maps)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
