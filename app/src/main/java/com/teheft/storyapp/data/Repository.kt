@@ -1,10 +1,8 @@
 package com.teheft.storyapp.data
 
-import android.graphics.pdf.PdfDocument.Page
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -13,24 +11,17 @@ import androidx.paging.liveData
 import com.google.gson.Gson
 import com.teheft.storyapp.data.pref.UserModel
 import com.teheft.storyapp.data.pref.UserPreference
-import com.teheft.storyapp.data.remote.response.DetailResponse
-import com.teheft.storyapp.data.remote.response.ListStoriesResponse
 import com.teheft.storyapp.data.remote.response.ListStoryItem
 import com.teheft.storyapp.data.remote.response.RegisterResponse
 import com.teheft.storyapp.data.remote.response.Story
 import com.teheft.storyapp.data.remote.retrofit.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.HttpException
-import retrofit2.Response
 import java.io.IOException
 import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 
 class Repository private constructor(
     private val userPreference: UserPreference,

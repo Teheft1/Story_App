@@ -59,9 +59,9 @@ class HomeViewModelTest{
         )
         differ.submitData(actualStory)
 
-        Assert.assertNotNull(differ.snapshot())
-        Assert.assertEquals(dummyStory.size, differ.snapshot().size)
-        Assert.assertEquals(dummyStory[0], differ.snapshot()[0])
+        assertNotNull(differ.snapshot())
+        assertEquals(dummyStory.size, differ.snapshot().size)
+        assertEquals(dummyStory[0], differ.snapshot()[0])
     }
 
     @Test
@@ -81,7 +81,7 @@ class HomeViewModelTest{
         )
         differ.submitData(actualStory)
 
-        Assert.assertEquals(0, differ.snapshot().size)
+        assertEquals(0, differ.snapshot().size)
     }
 
     class StoryPagingSource: PagingSource<Int, LiveData<List<ListStoryItem>>>() {
@@ -90,7 +90,7 @@ class HomeViewModelTest{
                 return PagingData.from(items)
             }
         }
-        override fun getRefreshKey(state: PagingState<Int, LiveData<List<ListStoryItem>>>): Int? {
+        override fun getRefreshKey(state: PagingState<Int, LiveData<List<ListStoryItem>>>): Int {
             return 0
         }
 
